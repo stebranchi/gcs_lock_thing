@@ -4,7 +4,6 @@
 [![image](https://img.shields.io/pypi/v/gcs_lock_thing.svg)](https://pypi.python.org/pypi/gcs_lock_thing)
 
 
-**Python Boilerplate contains all the boilerplate you need to create a Python package.**
 
 
 -   Free software: MIT license
