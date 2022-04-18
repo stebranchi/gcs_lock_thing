@@ -16,6 +16,14 @@ jobs:
                   python -m pip install --upgrade pip
                   pip install --user --no-cache-dir Cython
                   pip install --user -r requirements.txt
+
+            - uses: 'actions/checkout@v3'
+            - id: 'auth'
+              name: 'Authenticate to Google Cloud'
+              uses: 'google-github-actions/auth@v0'
+              with:
+                  credentials_json: '${{ secrets.GOOGLE_CREDENTIALS }}'
+
             - name: PKG-TEST
               run: |
                   python -m unittest discover tests/
