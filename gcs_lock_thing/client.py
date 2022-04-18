@@ -8,10 +8,6 @@ import backoff
 import logging
 import uuid
 
-import pytz
-
-logging.basicConfig(level=logging.debug)
-
 # Imports the Google Cloud client library
 from google.cloud import storage
 from google.api_core.exceptions import PreconditionFailed
@@ -39,14 +35,14 @@ class LockClient:
         :return: boolean, if lock acquired or not
         """
 
-        logging.info(f"Acquiring lock: {self.lock_file_path}")
+        print(f"Acquiring lock: {self.lock_file_path}")
 
         try:
             self._upload_lock_file()
-            logging.info("Lock acquired: {}".format(self.lock_file_path))
+            print("Lock acquired: {}".format(self.lock_file_path))
             return True
         except PreconditionFailed:  # this means lock already exists
-            logging.info(f"lock as its already in use, checking expiration: {self.lock_file_path}")
+            print(f"lock as its already in use, checking expiration: {self.lock_file_path}")
             # check if lock is expired
             blob_metadata = self.bucket.get_blob(self.lock_file_path).metadata
             expiration_timestamp = datetime.fromisoformat(blob_metadata.get('expiration_timestamp'))
@@ -56,7 +52,7 @@ class LockClient:
                 self.lock()
                 return True
 
-            logging.info("lock is not stale so we wait....")
+            print("lock is not stale so we wait....")
             return False
 
     def free_lock(self):
@@ -64,7 +60,7 @@ class LockClient:
         Free lock
         """
         self.bucket.blob(self.lock_file_path).delete()
-        logging.info(f"Lock released: {self.lock_file_path}")
+        print(f"Lock released: {self.lock_file_path}")
         return True
 
     def wait_for_lock(self, *backoff_args, **backoff_kwargs):
