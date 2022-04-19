@@ -5,7 +5,6 @@ https://www.joyfulbikeshedding.com/blog/2021-05-19-robust-distributed-locking-al
 from datetime import datetime, timedelta
 
 import backoff
-import logging
 import uuid
 
 # Imports the Google Cloud client library
@@ -24,6 +23,7 @@ class Client:
         self.lock_file_path = lock_file_path
         self.blob = self.bucket.blob(lock_file_path)
         self.lock_id_prefix = lock_id_prefix
+        self.lock_id = f"{lock_id_prefix}-{uuid.uuid4()}"
 
     def lock(self):
         """
@@ -94,7 +94,7 @@ class Client:
         open(file, 'a').close()
         self.blob.upload_from_filename(file, if_generation_match=0)
         metadata = {'expiration_timestamp': datetime.utcnow() + timedelta(seconds=self.ttl),
-                    'lock_id': f"{self.lock_id_prefix}-{uuid.uuid4()}"
+                    'lock_id': self.lock_id
                     }
         self.blob.metadata = metadata
         self.blob.patch()
