@@ -13,6 +13,7 @@ from google.api_core.exceptions import PreconditionFailed, NotFound
 
 
 class Client:
+
     storage_client = storage.Client()
 
     def __init__(self, bucket, lock_file_path: str = "gcs_lock_thing.txt", ttl=30, lock_id_prefix='default'):
@@ -25,11 +26,10 @@ class Client:
         self.lock_id_prefix = lock_id_prefix
         self.lock_id = f"{lock_id_prefix}-{uuid.uuid4()}"
 
-    def lock(self):
+    def lock(self) -> bool:
         """
         Creates a lock with the specified GCS path.
-        :param lock_path: the lock's GCS path with the gs://bucket-name/file-name format
-        :return: boolean, if lock acquired or not
+        Returns: boolean on lock acquisition status
         """
 
         print(f"Acquiring lock: {self.lock_file_path}")
@@ -52,9 +52,10 @@ class Client:
             print("lock is not stale so we wait....")
             return False
 
-    def free_lock(self):
+    def free_lock(self) -> bool:
         """
-        Free lock
+        Attempts to free lock
+        Returns: boolean on success
         """
         try:
             self.bucket.blob(self.lock_file_path).delete()
@@ -66,9 +67,14 @@ class Client:
 
     def wait_for_lock(self, *backoff_args, **backoff_kwargs):
         """
+        Wait for lock using backoff predicate variables
+        Args:
+            *backoff_args:
+            **backoff_kwargs:
+
+        Returns:
 
         """
-
         @backoff.on_predicate(*backoff_args, **backoff_kwargs)
         def backoff_lock():
             print(f"Backing off lock release: {self.lock_file_path}")
@@ -90,9 +96,11 @@ class Client:
         return self.wait_for_lock(wait_gen=backoff.expo, base=base, factor=factor, max_value=max_value,
                                   max_time=max_time, jitter=jitter, *args, **kwargs)
 
-    def _upload_lock_file(self):
+    def _upload_lock_file(self) -> None:
         """
         Upload dummy lock file with id and ttl metadata
+        Returns:
+
         """
         file = 'lock.txt'
         open(file, 'a').close()
