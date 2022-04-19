@@ -3,7 +3,7 @@
 """Tests for `gcs_lock_thing` package."""
 import unittest
 
-from gcs_lock_thing.client import LockClient
+import gcs_lock_thing.lock as gcs
 from google.cloud import storage
 
 
@@ -12,7 +12,7 @@ class TestgcsLockThing(unittest.TestCase):
     public_bucket_path = "data-trf-test-mutex-lock"
     lock_file_name = "test-lock.txt"
     ttl = 2
-    client = LockClient(bucket=public_bucket_path, lock_file_path=lock_file_name, ttl=ttl)
+    client = gcs.Client(bucket=public_bucket_path, lock_file_path=lock_file_name, ttl=ttl)
 
     def setUp(self):
         """Set up test fixtures, if any."""

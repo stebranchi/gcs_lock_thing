@@ -12,18 +12,15 @@ import uuid
 from google.cloud import storage
 from google.api_core.exceptions import PreconditionFailed
 
-# Instantiates a client
-client = storage.Client()
 
-
-class LockClient:
-    client = storage.Client()
+class Client:
+    storage_client = storage.Client()
 
     def __init__(self, bucket, lock_file_path: str = "gcs_lock_thing.txt", ttl=30, lock_id_prefix='default'):
         self.bucket = bucket
         self.lock_file_path = lock_file_path
         self.ttl = ttl
-        self.bucket = client.get_bucket(bucket)
+        self.bucket = self.storage_client.get_bucket(bucket)
         self.lock_file_path = lock_file_path
         self.blob = self.bucket.blob(lock_file_path)
         self.lock_id_prefix = lock_id_prefix
