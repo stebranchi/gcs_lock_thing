@@ -9,7 +9,7 @@ import uuid
 
 # Imports the Google Cloud client library
 from google.cloud import storage
-from google.api_core.exceptions import PreconditionFailed
+from google.api_core.exceptions import PreconditionFailed, NotFound
 
 
 class Client:
@@ -56,7 +56,11 @@ class Client:
         """
         Free lock
         """
-        self.bucket.blob(self.lock_file_path).delete()
+        try:
+            self.bucket.blob(self.lock_file_path).delete()
+        except NotFound:
+            print("lock already freed so do nothing")
+
         print(f"Lock released: {self.lock_file_path}")
         return True
 
