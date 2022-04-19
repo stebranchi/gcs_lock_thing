@@ -4,7 +4,7 @@
 [![image](https://img.shields.io/pypi/v/gcs_lock_thing.svg)](https://pypi.python.org/pypi/gcs_lock_thing)
 
 
-**Python Boilerplate contains all the boilerplate you need to create a Python package.**
+**Basic mutex lock implementation with Google Cloud Storage with ttl and exponential backoff**
 
 
 -   Free software: MIT license
