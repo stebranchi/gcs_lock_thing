@@ -42,9 +42,7 @@ To use gcs-lock-thing in a project:
 import gcs_lock_thing.lock as gcs
 
 public_bucket_path = "data-trf-test-mutex-lock"
-lock_file_name = "test-lock.txt"
-ttl = 2
-client = gcs.Client(bucket=public_bucket_path, lock_file_path=lock_file_name, ttl=ttl)
+client = gcs.Client(bucket=public_bucket_path, lock_file_path="test-lock.txt", ttl=2)
 
 # get lock
 status = client.lock()
